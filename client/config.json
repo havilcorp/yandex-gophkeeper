@@ -1,0 +1,4 @@
+{
+	"address_http": "http://localhost:8080",
+	"address_grpc": ":8081"
+}
