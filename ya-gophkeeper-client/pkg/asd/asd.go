@@ -1,0 +1,4 @@
+package asd
+
+func New() {
+}

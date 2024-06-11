@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package save;
+
+option go_package = "save.proto";
+
+message SaveRequest {
+    bytes data = 1;
+    string meta = 2;
+}
+
+message SaveResponse {
+    string error = 1;
+}
+
+message GetAllRequest {
+
+}
+
+message GetAllResponse {
+    repeated SaveRequest Items = 1;
+}
+
+service Metric {
+    rpc Save(SaveRequest) returns (SaveResponse);
+    rpc GetAll(GetAllRequest) returns (GetAllResponse);
+}
