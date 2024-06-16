@@ -3,7 +3,7 @@ package psql
 import (
 	"database/sql"
 
-	"ya-gophkeeper-server/internal/auth/entity"
+	"yandex-gophkeeper-server/internal/auth/entity"
 
 	"github.com/sirupsen/logrus"
 )

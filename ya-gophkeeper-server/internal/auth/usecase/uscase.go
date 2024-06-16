@@ -4,8 +4,8 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 
-	"ya-gophkeeper-server/internal/auth"
-	"ya-gophkeeper-server/internal/auth/entity"
+	"yandex-gophkeeper-server/internal/auth"
+	"yandex-gophkeeper-server/internal/auth/entity"
 )
 
 type usecace struct {

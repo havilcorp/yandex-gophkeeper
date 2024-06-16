@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"ya-gophkeeper-server/internal/auth"
-	"ya-gophkeeper-server/internal/auth/entity"
-	"ya-gophkeeper-server/internal/config"
-	"ya-gophkeeper-server/pkg/jwt"
+	"yandex-gophkeeper-server/internal/auth"
+	"yandex-gophkeeper-server/internal/auth/entity"
+	"yandex-gophkeeper-server/internal/config"
+	"yandex-gophkeeper-server/pkg/jwt"
 
 	"github.com/sirupsen/logrus"
 )

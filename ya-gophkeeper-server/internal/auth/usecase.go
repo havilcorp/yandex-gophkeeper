@@ -1,6 +1,6 @@
 package auth
 
-import "ya-gophkeeper-server/internal/auth/entity"
+import "yandex-gophkeeper-server/internal/auth/entity"
 
 type UserCase interface {
 	Login(email string, password string) (*entity.User, error)
