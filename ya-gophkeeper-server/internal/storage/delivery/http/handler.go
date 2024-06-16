@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"ya-gophkeeper-server/internal/config"
-	"ya-gophkeeper-server/internal/storage"
-	"ya-gophkeeper-server/internal/storage/entity"
+	"yandex-gophkeeper-server/internal/config"
+	"yandex-gophkeeper-server/internal/storage"
+	"yandex-gophkeeper-server/internal/storage/entity"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/sirupsen/logrus"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ya-gophkeeper-client/internal/app"
+	"yandex-gophkeeper-client/internal/app"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package sqlite
 import (
 	"database/sql"
 
-	"ya-gophkeeper-client/internal/entity"
+	"yandex-gophkeeper-client/internal/entity"
 
 	_ "github.com/mattn/go-sqlite3"
 )

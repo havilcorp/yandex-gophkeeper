@@ -2,10 +2,14 @@
 
 ## О проекте
 
-Решил в этой дипломной работе попробовать другую реализацию чистой архитектуры,
-где функционал будет разделен на модули.
+Решил в этой дипломной работе попробовать модульную реализацию чистой архитектуры.
 
-GRPC реализовал в storage, авторизацию решил оставить на HTTP
+Авторизация и регистрация работает по протоколу HTTP
+Сохранение и получение данных работает по протоколу GRPC
+Синхронизация работает по протоколу WebSocket
+
+Протокол HTTP и GRPC обернуты протоколом TLS
+P.S. Первый раз работаю с TLS, поэтому мог реализовать что-то не так.
 
 ## Покрытие
 
@@ -21,6 +25,14 @@ migrate create -ext sql -dir db/migrations -seq create_users_table
 
 export POSTGRESQL_URL='postgres://postgres:password@localhost:5433/postgres?sslmode=disable'
 migrate -database ${POSTGRESQL_URL} -path db/migrations up
+```
+
+## mockery
+
+Предоставляет возможность легко создавать макеты для интерфейсов Golang
+
+```shell
+docker run -v "$PWD":/src -w /src vektra/mockery --all
 ```
 
 ## todo

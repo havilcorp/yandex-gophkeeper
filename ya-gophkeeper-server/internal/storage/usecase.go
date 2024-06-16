@@ -1,6 +1,6 @@
 package storage
 
-import "ya-gophkeeper-server/internal/storage/entity"
+import "yandex-gophkeeper-server/internal/storage/entity"
 
 type UserCase interface {
 	Save(userId int, dto *entity.CreateDto) error

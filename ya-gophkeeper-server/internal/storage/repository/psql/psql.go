@@ -3,7 +3,7 @@ package psql
 import (
 	"database/sql"
 
-	"ya-gophkeeper-server/internal/storage/entity"
+	"yandex-gophkeeper-server/internal/storage/entity"
 )
 
 type psqlstorage struct {

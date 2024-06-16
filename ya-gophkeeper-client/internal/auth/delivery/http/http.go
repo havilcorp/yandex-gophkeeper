@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"ya-gophkeeper-client/internal/auth/entity"
-	"ya-gophkeeper-client/internal/config"
+	"yandex-gophkeeper-client/internal/auth/entity"
+	"yandex-gophkeeper-client/internal/config"
 
 	"github.com/sirupsen/logrus"
 )

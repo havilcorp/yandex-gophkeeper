@@ -9,24 +9,30 @@ import (
 	"net/http"
 	"os"
 
-	authDevivery "ya-gophkeeper-client/internal/auth/delivery/http"
-	authUseCase "ya-gophkeeper-client/internal/auth/usecase"
-	"ya-gophkeeper-client/internal/sqlite"
+	pb "github.com/havilcorp/yandex-gophkeeper-proto/save"
 
-	storeDevivery "ya-gophkeeper-client/internal/store/delivery/http"
-	storeUseCase "ya-gophkeeper-client/internal/store/usecase"
+	authDevivery "yandex-gophkeeper-client/internal/auth/delivery/http"
+	authEntity "yandex-gophkeeper-client/internal/auth/entity"
+	authUseCase "yandex-gophkeeper-client/internal/auth/usecase"
+	"yandex-gophkeeper-client/internal/sqlite"
 
-	"ya-gophkeeper-client/internal/auth/entity"
-	cmdInterface "ya-gophkeeper-client/internal/cli"
-	"ya-gophkeeper-client/internal/config"
+	storeDeviveryGrpc "yandex-gophkeeper-client/internal/store/delivery/grpc"
+	storeUseCase "yandex-gophkeeper-client/internal/store/usecase"
 
-	"ya-gophkeeper-client/pkg/crypto"
+	cmdInterface "yandex-gophkeeper-client/internal/cli"
+	"yandex-gophkeeper-client/internal/config"
+
+	"yandex-gophkeeper-client/pkg/crypto"
 
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 func Start() {
 	conf := config.New()
+
+	// TLS
 
 	caCert, err := os.ReadFile("./tls/ca.crt")
 	if err != nil {
@@ -40,34 +46,53 @@ func Start() {
 	if err != nil {
 		logrus.Error(err)
 	}
+	certConfig := &tls.Config{
+		RootCAs:      caCertPool,
+		Certificates: []tls.Certificate{cert},
+	}
+	credTLS := credentials.NewTLS(certConfig)
 
-	client := http.Client{
+	// Client GRPC
+
+	connectGRPC, err := grpc.NewClient(conf.AddressGRPC, grpc.WithTransportCredentials(credTLS))
+	if err != nil {
+		logrus.Panic(err)
+	}
+	defer connectGRPC.Close()
+	clientGRPC := pb.NewSaveClient(connectGRPC)
+
+	// Client HTTP
+
+	clientHTTP := http.Client{
 		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:      caCertPool,
-				Certificates: []tls.Certificate{cert},
-			},
+			TLSClientConfig: certConfig,
 		},
 	}
+
+	// SQLite
 
 	db, err := sql.Open("sqlite3", "./sqlite-database.db")
 	if err != nil {
 		logrus.Panic(err)
 	}
 	defer db.Close()
-
 	sqlt := sqlite.New(db)
 	if err := sqlt.Migration(); err != nil {
 		logrus.Panic(err)
 	}
 
-	authD := authDevivery.New(conf, &client)
+	// Architecture
+
+	authD := authDevivery.New(conf, &clientHTTP)
 	authUC := authUseCase.New(authD)
-	storeD := storeDevivery.New(conf, &client)
-	storeUC := storeUseCase.New(storeD, sqlt)
+	// storeDelHTTP := storeDeviveryHttp.New(conf, &clientHTTP)
+	storeDelGRPC := storeDeviveryGrpc.New(conf, clientGRPC)
+	storeUC := storeUseCase.New(storeDelGRPC, sqlt)
 
 	var token string
 	var cryptoKey []byte
+
+	// CLI
 
 	cli := cmdInterface.New()
 
@@ -82,7 +107,7 @@ func Start() {
 			logrus.Error(err)
 			return
 		}
-		token, err = authUC.Login(&entity.LoginDto{
+		token, err = authUC.Login(&authEntity.LoginDto{
 			Email:    email,
 			Password: pass,
 		})
@@ -91,7 +116,7 @@ func Start() {
 			return
 		}
 		cli.Println("Вы успешно авторизовались!")
-		storeD.SetToken(token)
+		storeDelGRPC.SetToken(token)
 	})
 
 	cli.Register("reg", func() {
@@ -114,7 +139,7 @@ func Start() {
 			cli.Println("Пароли не совпадают!")
 			return
 		}
-		token, err = authUC.Registration(&entity.LoginDto{
+		token, err = authUC.Registration(&authEntity.LoginDto{
 			Email:    email,
 			Password: pass,
 		})
@@ -122,7 +147,7 @@ func Start() {
 			logrus.Error(err)
 			return
 		}
-		storeD.SetToken(token)
+		storeDelGRPC.SetToken(token)
 	})
 
 	cli.Register("crypto", func() {
@@ -214,7 +239,7 @@ func Start() {
 		if len(cryptoKey) == 0 {
 			cli.Call("crypto")
 		}
-		list, err := storeUC.GetList()
+		list, err := storeUC.GetByLocalAll()
 		if err != nil {
 			logrus.Error(err)
 			return
@@ -236,6 +261,13 @@ func Start() {
 			}
 		}
 		cli.Println("============================")
+	})
+
+	cli.Register("sync", func() {
+		err := storeUC.Sync()
+		if err != nil {
+			logrus.Error(err)
+		}
 	})
 
 	cli.Run()

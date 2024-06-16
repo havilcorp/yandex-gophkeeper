@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"ya-gophkeeper-client/internal/auth"
-	"ya-gophkeeper-client/internal/auth/entity"
+	"yandex-gophkeeper-client/internal/auth"
+	"yandex-gophkeeper-client/internal/auth/entity"
 )
 
 type UserCase struct {

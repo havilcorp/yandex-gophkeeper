@@ -11,6 +11,9 @@ import (
 type Config struct {
 	AddressHttp string `json:"address_http"`
 	AddressGRPC string `json:"address_grpc"`
+	CACrt       string `json:"ca_crt"`
+	ServerCrt   string `json:"server_crt"`
+	ServerKey   string `json:"server_key"`
 	DBConnect   string `json:"db_connect"`
 	JWTKey      string `json:"jwt_key"`
 }
@@ -19,7 +22,7 @@ func New() *Config {
 	conf := Config{
 		AddressHttp: "localhost:8080",
 	}
-	var AddressHttp, AddressGRPC, DBConnect, JWTKey string
+	var AddressHttp, AddressGRPC, DBConnect, CACrt, ServerCrt, ServerKey, JWTKey string
 
 	if data, err := os.ReadFile("./config.json"); err == nil {
 		if err := json.Unmarshal(data, &conf); err != nil {
@@ -29,6 +32,9 @@ func New() *Config {
 
 	flag.StringVar(&AddressHttp, "address_http", "", "address and port to run server")
 	flag.StringVar(&AddressGRPC, "address_grpc", "", "address and port to run grpc server")
+	flag.StringVar(&CACrt, "ca_crt", "", "")
+	flag.StringVar(&ServerCrt, "server_crt", "", "")
+	flag.StringVar(&ServerKey, "server_key", "", "")
 	flag.StringVar(&DBConnect, "psql", "", "address database connect")
 	flag.StringVar(&JWTKey, "jwt_key", "", "jwt key")
 	flag.Parse()
@@ -51,6 +57,18 @@ func New() *Config {
 
 	if envAddressGRPC := os.Getenv("ADDRESS_GRPC"); envAddressGRPC != "" {
 		conf.AddressGRPC = envAddressGRPC
+	}
+
+	if envCaCrt := os.Getenv("CA_CRT"); envCaCrt != "" {
+		conf.CACrt = envCaCrt
+	}
+
+	if envServerCrt := os.Getenv("SERVER_CRT"); envServerCrt != "" {
+		conf.ServerCrt = envServerCrt
+	}
+
+	if envServerKey := os.Getenv("SERVER_KEY"); envServerKey != "" {
+		conf.ServerKey = envServerKey
 	}
 
 	if envDBConnect := os.Getenv("DB_CONNECT"); envDBConnect != "" {

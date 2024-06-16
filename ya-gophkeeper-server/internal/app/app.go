@@ -4,20 +4,29 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"net"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 
-	authHttpController "ya-gophkeeper-server/internal/auth/delivery/http"
-	authPsqlRepository "ya-gophkeeper-server/internal/auth/repository/psql"
-	authUseCase "ya-gophkeeper-server/internal/auth/usecase"
-	"ya-gophkeeper-server/internal/config"
-	middleware "ya-gophkeeper-server/internal/middlewares"
+	authHttpController "yandex-gophkeeper-server/internal/auth/delivery/http"
+	authPsqlRepository "yandex-gophkeeper-server/internal/auth/repository/psql"
+	authUseCase "yandex-gophkeeper-server/internal/auth/usecase"
+	"yandex-gophkeeper-server/internal/config"
+	middleware "yandex-gophkeeper-server/internal/middlewares"
 
-	storageHttpController "ya-gophkeeper-server/internal/storage/delivery/http"
-	storagePsqlRepository "ya-gophkeeper-server/internal/storage/repository/psql"
-	storageUseCase "ya-gophkeeper-server/internal/storage/usecase"
+	storageGRPCController "yandex-gophkeeper-server/internal/storage/delivery/grpc"
+	storageHttpController "yandex-gophkeeper-server/internal/storage/delivery/http"
+	storagePsqlRepository "yandex-gophkeeper-server/internal/storage/repository/psql"
+	storageUseCase "yandex-gophkeeper-server/internal/storage/usecase"
+
+	pb "github.com/havilcorp/yandex-gophkeeper-proto/save"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/sirupsen/logrus"
@@ -43,9 +52,7 @@ func Start() {
 	storageUC := storageUseCase.New(storageRepo)
 	storageHttpController.NewHandler(conf, storageUC).Register(router)
 
-	logrus.Infof("Server started %s", conf.AddressHttp)
-
-	caCert, err := os.ReadFile("./tls/ca.crt")
+	caCert, err := os.ReadFile(conf.CACrt)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -62,10 +69,44 @@ func Start() {
 			ClientAuth: tls.RequireAndVerifyClientCert,
 		},
 	}
-	err = server.ListenAndServeTLS("./tls/server.crt", "./tls/server.key")
-	// err = http.ListenAndServeTLS(conf.AddressHttp, "./ssl/server.crt", "./ssl/server.key", router)
-	// err = http.ListenAndServe(conf.AddressHttp, router)
+
+	grpcListener, err := net.Listen("tcp", conf.AddressGRPC)
 	if err != nil {
 		logrus.Error(err)
+		return
 	}
+	cred, err := credentials.NewServerTLSFromFile(conf.ServerCrt, conf.ServerKey)
+	serverGRPC := grpc.NewServer(grpc.Creds(cred), grpc.ChainUnaryInterceptor(middleware.AuthGRPCMiddleware(conf.JWTKey)))
+	pb.RegisterSaveServer(serverGRPC, storageGRPCController.NewHandler(conf, storageUC))
+
+	go func() {
+		logrus.Printf("Сервер gRPC начал работу по адресу: %s\n", conf.AddressGRPC)
+		if err = serverGRPC.Serve(grpcListener); err != nil {
+			logrus.Error(err)
+		}
+		logrus.Printf("Сервер gRPC прекратил работу")
+	}()
+
+	go func() {
+		logrus.Printf("Сервер HTTP начал работу по адресу: %s\n", conf.AddressHttp)
+		err = server.ListenAndServeTLS(conf.ServerCrt, conf.ServerKey)
+		if err != nil {
+			logrus.Error(err)
+		}
+		logrus.Printf("Сервер HTTP прекратил работу")
+	}()
+
+	terminateSignals := make(chan os.Signal, 1)
+	signal.Notify(terminateSignals, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
+	<-terminateSignals
+
+	if err := server.Close(); err != nil {
+		logrus.Error(err)
+	}
+
+	if err := grpcListener.Close(); err != nil {
+		logrus.Error(err)
+	}
+
+	time.Sleep(time.Second * 2)
 }

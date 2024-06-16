@@ -1,6 +1,6 @@
 package main
 
-import "ya-gophkeeper-server/internal/app"
+import "yandex-gophkeeper-server/internal/app"
 
 func main() {
 	app.Start()

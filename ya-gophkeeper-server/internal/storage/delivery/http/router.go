@@ -1,14 +1,14 @@
 package http
 
 import (
-	middleware "ya-gophkeeper-server/internal/middlewares"
+	middleware "yandex-gophkeeper-server/internal/middlewares"
 
 	"github.com/go-chi/chi/v5"
 )
 
 func (h *handler) Register(mux *chi.Mux) {
 	mux.Route("/storage", func(r chi.Router) {
-		r.Use(middleware.AuthMiddleware3([]byte(h.conf.JWTKey)))
+		r.Use(middleware.AuthMiddleware3(h.conf.JWTKey))
 		r.Post("/", h.Create)
 		r.Get("/{id}", h.GetOne)
 		r.Get("/", h.GetAll)

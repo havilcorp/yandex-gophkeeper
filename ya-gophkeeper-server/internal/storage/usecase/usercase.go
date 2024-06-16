@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"ya-gophkeeper-server/internal/storage"
-	"ya-gophkeeper-server/internal/storage/entity"
+	"yandex-gophkeeper-server/internal/storage"
+	"yandex-gophkeeper-server/internal/storage/entity"
 )
 
 type usecace struct {

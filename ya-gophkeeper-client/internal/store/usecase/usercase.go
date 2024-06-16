@@ -1,8 +1,10 @@
 package usecase
 
 import (
-	"ya-gophkeeper-client/internal/entity"
-	"ya-gophkeeper-client/internal/store"
+	"bytes"
+
+	"yandex-gophkeeper-client/internal/entity"
+	"yandex-gophkeeper-client/internal/store"
 
 	"github.com/sirupsen/logrus"
 )
@@ -32,24 +34,58 @@ func (uc *UserCase) Save(data []byte, meta string) error {
 	return err
 }
 
-func (uc *UserCase) GetById(id string) (*entity.ItemDto, error) {
-	data, err := uc.del.GetByID(id)
+func (uc *UserCase) Sync() error {
+	listStore, err := uc.del.GetAll()
 	if err != nil {
 		logrus.Error(err)
-		return nil, err
+		return err
 	}
-	return data, err
-}
-
-func (uc *UserCase) GetList2() (*[]entity.ItemDto, error) {
-	data, err := uc.del.GetList()
+	listLocal, err := uc.local.GetAll()
 	if err != nil {
 		logrus.Error(err)
-		return nil, err
+		return err
 	}
-	return data, err
+	for _, localItem := range *listLocal {
+		isFind := false
+		for _, storeItem := range *listStore {
+			if bytes.Equal(storeItem.Data, localItem.Data) {
+				isFind = true
+				break
+			}
+		}
+		if !isFind {
+			logrus.Info("Sync local to server")
+			err := uc.del.Save(&localItem)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+		}
+	}
+	for _, storeItem := range *listStore {
+		isFind := false
+		for _, localItem := range *listLocal {
+			if bytes.Equal(localItem.Data, storeItem.Data) {
+				isFind = true
+				break
+			}
+		}
+		if !isFind {
+			logrus.Info("Sync server to local")
+			err := uc.local.Save(&storeItem)
+			if err != nil {
+				logrus.Error(err)
+				return err
+			}
+		}
+	}
+	return nil
 }
 
-func (uc *UserCase) GetList() (*[]entity.ItemDto, error) {
+func (uc *UserCase) GetByServerAll() (*[]entity.ItemDto, error) {
+	return uc.del.GetAll()
+}
+
+func (uc *UserCase) GetByLocalAll() (*[]entity.ItemDto, error) {
 	return uc.local.GetAll()
 }
