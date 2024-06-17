@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func AuthMiddleware3(jwtKey string) func(http.Handler) http.Handler {
+func JWTAuthMiddleware(jwtKey string) func(http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authorization := r.Header.Get("Authorization")

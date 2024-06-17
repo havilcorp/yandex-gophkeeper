@@ -1,20 +1,49 @@
 # Менеджер паролей GophKeeper
 
+## Кратко
+
+### Сервер
+
+Роуты
+
+- POST auth/login # Авторизация
+- POST auth/registration # Регистрация
+- GRPC Save # Добавить данные
+- GRPC GetAll # Получить все данные
+
+HTTP и GRPC работают по протоколу TLS
+В качестве аутентификации используется стандарт JWT
+
+### Клиент
+
+Команды
+
+- login: Авторизация
+- registration: Регистрация
+- add: Добавить данные
+- list: Получить все данные
+- sync: Синхронизация данных между сервером и клиентом
+
 ## О проекте
 
 Решил в этой дипломной работе попробовать модульную реализацию чистой архитектуры.
 
 Авторизация и регистрация работает по протоколу HTTP
-Сохранение и получение данных работает по протоколу GRPC
-Синхронизация работает по протоколу WebSocket
+Сохранение и получение данных работает по протоколу GRPC, так же предусмотрел HTTP
+Синхронизация работает вызовом команды sync. Хотел сделать по websocket, но не хватило времени.
 
 Протокол HTTP и GRPC обернуты протоколом TLS
 P.S. Первый раз работаю с TLS, поэтому мог реализовать что-то не так.
 
 ## Покрытие
 
+Сервер: 83.0%
+Клиент: 00.0%
+
 ```shell
-go test -v -race ./... -coverprofile cover.out
+go test ./... -coverprofile cover.tmp.out
+cat cover.tmp.out | grep -v "/mocks/" > cover.out
+go tool cover -func=cover.out | grep total:
 go tool cover -html=cover.out
 ```
 
@@ -32,7 +61,8 @@ migrate -database ${POSTGRESQL_URL} -path db/migrations up
 Предоставляет возможность легко создавать макеты для интерфейсов Golang
 
 ```shell
-docker run -v "$PWD":/src -w /src vektra/mockery --all
+docker run -v "$PWD":/src -w /src vektra/mockery --all --dir internal/auth --output internal/auth/mocks
+docker run -v "$PWD":/src -w /src vektra/mockery --all --dir internal/storage --output internal/storage/mocks
 ```
 
 ## todo

@@ -33,8 +33,7 @@ func (uc *usecace) Login(email string, password string) (*entity.User, error) {
 
 // TODO: check GetUser error
 func (uc *usecace) Registration(email string, password string) (*entity.User, error) {
-	_, err := uc.repo.GetUser(email)
-	if err == nil {
+	if _, err := uc.repo.GetUser(email); err == nil {
 		return nil, entity.ErrUserExists
 	}
 	hash := md5.Sum([]byte(password))

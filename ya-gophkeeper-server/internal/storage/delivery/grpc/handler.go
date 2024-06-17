@@ -2,22 +2,22 @@ package grpc
 
 import (
 	"context"
+	"strconv"
 
 	"yandex-gophkeeper-server/internal/config"
 	"yandex-gophkeeper-server/internal/storage"
 	"yandex-gophkeeper-server/internal/storage/entity"
 
 	pb "github.com/havilcorp/yandex-gophkeeper-proto/save"
-	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
 	pb.UnimplementedSaveServer
 	conf *config.Config
-	uc   storage.UserCase
+	uc   storage.UseCase
 }
 
-func NewHandler(conf *config.Config, uc storage.UserCase) *handler {
+func NewHandler(conf *config.Config, uc storage.UseCase) *handler {
 	return &handler{
 		conf: conf,
 		uc:   uc,
@@ -26,12 +26,16 @@ func NewHandler(conf *config.Config, uc storage.UserCase) *handler {
 
 func (h *handler) Save(ctx context.Context, in *pb.SaveRequest) (*pb.SaveResponse, error) {
 	var response pb.SaveResponse
-	err := h.uc.Save(1, &entity.CreateDto{
+	userStr := ctx.Value("X-User-ID").(string)
+	user, err := strconv.Atoi(userStr)
+	if err != nil {
+		return &response, err
+	}
+	err = h.uc.Save(user, &entity.CreateDto{
 		Data: in.Data,
 		Meta: in.Meta,
 	})
 	if err != nil {
-		logrus.Error(err)
 		return &response, err
 	}
 	return &response, nil
@@ -39,9 +43,13 @@ func (h *handler) Save(ctx context.Context, in *pb.SaveRequest) (*pb.SaveRespons
 
 func (h *handler) GetAll(ctx context.Context, in *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	var response pb.GetAllResponse
-	items, err := h.uc.GetAll(1)
+	userStr := ctx.Value("X-User-ID").(string)
+	user, err := strconv.Atoi(userStr)
 	if err != nil {
-		logrus.Error(err)
+		return &response, err
+	}
+	items, err := h.uc.GetAll(user)
+	if err != nil {
 		return &response, err
 	}
 	for _, item := range *items {

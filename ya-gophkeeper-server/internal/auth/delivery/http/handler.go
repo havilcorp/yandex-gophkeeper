@@ -16,10 +16,10 @@ import (
 
 type handler struct {
 	conf *config.Config
-	uc   auth.UserCase
+	uc   auth.UseCase
 }
 
-func NewHandler(conf *config.Config, uc auth.UserCase) *handler {
+func NewHandler(conf *config.Config, uc auth.UseCase) *handler {
 	return &handler{
 		conf: conf,
 		uc:   uc,
@@ -47,6 +47,7 @@ func (h *handler) login(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			logrus.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
@@ -62,12 +63,7 @@ func (h *handler) login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	_, err = w.Write(b)
-	if err != nil {
-		logrus.Error(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	w.Write(b)
 }
 
 func (h *handler) registration(w http.ResponseWriter, r *http.Request) {
@@ -86,6 +82,7 @@ func (h *handler) registration(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			logrus.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
@@ -101,10 +98,5 @@ func (h *handler) registration(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	_, err = w.Write(b)
-	if err != nil {
-		logrus.Error(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	w.Write(b)
 }

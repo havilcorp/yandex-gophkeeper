@@ -96,7 +96,7 @@ func Start() {
 
 	cli := cmdInterface.New()
 
-	cli.Register("auth", func() {
+	cli.Register("login", func() {
 		email, err := cli.GetUserPrint("Почта: ")
 		if err != nil {
 			logrus.Error(err)
@@ -119,7 +119,7 @@ func Start() {
 		storeDelGRPC.SetToken(token)
 	})
 
-	cli.Register("reg", func() {
+	cli.Register("registration", func() {
 		email, err := cli.GetUserPrint("Почта: ")
 		if err != nil {
 			logrus.Error(err)

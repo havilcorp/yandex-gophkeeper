@@ -8,11 +8,8 @@ import (
 
 func (h *handler) Register(mux *chi.Mux) {
 	mux.Route("/storage", func(r chi.Router) {
-		r.Use(middleware.AuthMiddleware3(h.conf.JWTKey))
-		r.Post("/", h.Create)
-		r.Get("/{id}", h.GetOne)
-		r.Get("/", h.GetAll)
-		r.Put("/{id}", h.Update)
-		r.Delete("/{id}", h.Remove)
+		r.Use(middleware.JWTAuthMiddleware(h.conf.JWTKey))
+		r.Post("/", h.save)
+		r.Get("/", h.getAll)
 	})
 }

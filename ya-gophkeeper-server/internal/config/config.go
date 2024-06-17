@@ -18,24 +18,30 @@ type Config struct {
 	JWTKey      string `json:"jwt_key"`
 }
 
+func writeConfigByFile(file string, conf *Config) error {
+	if data, err := os.ReadFile(file); err == nil {
+		if err = json.Unmarshal(data, &conf); err != nil {
+			logrus.Error(err)
+			return err
+		}
+	}
+	return nil
+}
+
 func New() *Config {
 	conf := Config{
 		AddressHttp: "localhost:8080",
 	}
 	var AddressHttp, AddressGRPC, DBConnect, CACrt, ServerCrt, ServerKey, JWTKey string
 
-	if data, err := os.ReadFile("./config.json"); err == nil {
-		if err := json.Unmarshal(data, &conf); err != nil {
-			logrus.Error(err)
-		}
-	}
+	writeConfigByFile("./config.json", &conf)
 
 	flag.StringVar(&AddressHttp, "address_http", "", "address and port to run server")
 	flag.StringVar(&AddressGRPC, "address_grpc", "", "address and port to run grpc server")
 	flag.StringVar(&CACrt, "ca_crt", "", "")
 	flag.StringVar(&ServerCrt, "server_crt", "", "")
 	flag.StringVar(&ServerKey, "server_key", "", "")
-	flag.StringVar(&DBConnect, "psql", "", "address database connect")
+	flag.StringVar(&DBConnect, "db", "", "address database connect")
 	flag.StringVar(&JWTKey, "jwt_key", "", "jwt key")
 	flag.Parse()
 
