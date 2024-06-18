@@ -1,0 +1,57 @@
+services:
+  psql:
+    image: postgres:latest
+    networks:
+      ya-gophkeeper-network:
+        aliases:
+          - database
+    container_name: psql
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: server
+    restart: always
+    networks:
+      - ya-gophkeeper-network
+    ports:
+      - 8080:8080
+      - 8081:8081
+    environment:
+      DB_CONNECT: 'postgres://postgres:password@database:5432/postgres?sslmode=disable'
+    volumes:
+      - ya-gophkeeper-migrations:/build/migrations
+    depends_on:
+      psql:
+        condition: service_healthy
+  
+  migrate:
+    image: migrate/migrate
+    container_name: migrate
+    networks:
+      - ya-gophkeeper-network
+    volumes:
+      - ya-gophkeeper-migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://postgres:password@database:5432/postgres?sslmode=disable", "up"]
+    links: 
+      - server
+    depends_on:
+      psql:
+        condition: service_healthy
+
+networks:
+      ya-gophkeeper-network:
+
+volumes:
+  ya-gophkeeper-migrations:

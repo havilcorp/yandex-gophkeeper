@@ -14,6 +14,12 @@
 
 P.S. Первый раз работаю с TLS, поэтому мог реализовать что-то не так.
 
+## Запуск
+
+```shell
+docker-compose up
+```
+
 ## Сервер
 
 Роуты
@@ -36,6 +42,7 @@ HTTP и GRPC работают по протоколу TLS
 - add: Добавить данные
 - list: Получить все данные
 - sync: Синхронизация данных между сервером и клиентом
+- crypto: Изменение пароля шифрования
 
 ## Покрытие
 
@@ -55,13 +62,13 @@ go tool cover -html=cover.out
 
 #### Client
 
-* MacOS - Выше приложил GIF файл
+- MacOS - Выше приложил GIF файл
 
-* Windows
+- Windows
 
 ![IMAGE 2024-06-18 21:37:34](https://github.com/havilcorp/yandex-gophkeeper/assets/58453931/3719e932-9e2d-40e1-ac7e-62d647bf142a)
 
-* Linux
+- Linux
 
 <img width="598" alt="Screenshot 2024-06-18 at 22 13 05" src="https://github.com/havilcorp/yandex-gophkeeper/assets/58453931/e0963711-3ae7-4151-a3c8-611044989710">
 
