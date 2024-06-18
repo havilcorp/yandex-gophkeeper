@@ -10,7 +10,7 @@
 - Сохранение и получение данных работает по протоколу GRPC, так же предусмотрел HTTP.
 - Синхронизация работает вызовом команды sync. Хотел сделать по websocket, но не хватило времени.
 - Протокол HTTP и GRPC обернуты протоколом TLS
-- Данные шифруются паролем на стороне клиента
+- Данные шифруются паролем и солью на стороне клиента
 
 P.S. Первый раз работаю с TLS, поэтому мог реализовать что-то не так.
 
@@ -54,6 +54,16 @@ go tool cover -html=cover.out
 ## Build
 
 #### Client
+
+* MacOS - Выше приложил GIF файл
+
+* Windows
+
+![IMAGE 2024-06-18 21:37:34](https://github.com/havilcorp/yandex-gophkeeper/assets/58453931/3719e932-9e2d-40e1-ac7e-62d647bf142a)
+
+* Linux
+
+<img width="598" alt="Screenshot 2024-06-18 at 22 13 05" src="https://github.com/havilcorp/yandex-gophkeeper/assets/58453931/e0963711-3ae7-4151-a3c8-611044989710">
 
 ```shell
 GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
