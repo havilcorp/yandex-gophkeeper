@@ -62,6 +62,12 @@ go tool cover -html=cover.out
 
 #### Client
 
+```shell
+GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
+GOOS=windows GOARCH=amd64 go build -o build/win.exe cmd/main.go
+GOOS=linux GOARCH=amd64 go build -o build/linux cmd/main.go
+```
+
 - MacOS - Выше приложил GIF файл
 
 - Windows
@@ -71,20 +77,6 @@ go tool cover -html=cover.out
 - Linux
 
 <img width="598" alt="Screenshot 2024-06-18 at 22 13 05" src="https://github.com/havilcorp/yandex-gophkeeper/assets/58453931/e0963711-3ae7-4151-a3c8-611044989710">
-
-```shell
-GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
-GOOS=windows GOARCH=amd64 go build -o build/win.exe cmd/main.go
-GOOS=linux GOARCH=amd64 go build -o build/linux cmd/main.go
-```
-
-#### Server
-
-```shell
-GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
-GOOS=windows GOARCH=amd64 go build -o build/win.exe cmd/main.go
-GOOS=linux GOARCH=amd64 go build -o build/linux cmd/main.go
-```
 
 ## migration
 
