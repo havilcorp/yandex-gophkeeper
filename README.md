@@ -56,9 +56,9 @@ go tool cover -html=cover.out
 #### Client
 
 ```shell
-GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -o build/macos cmd/main.go
-GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC="x86_64-w64-mingw32-gcc" go build -o build/win.exe cmd/main.go
-GOOS=linux GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-linux-musl-gcc  CXX=x86_64-linux-musl-g++ go build -o build/linux cmd/main.go
+GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
+GOOS=windows GOARCH=amd64 go build -o build/win.exe cmd/main.go
+GOOS=linux GOARCH=amd64 go build -o build/linux cmd/main.go
 ```
 
 #### Server

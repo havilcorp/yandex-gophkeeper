@@ -30,7 +30,7 @@ func Start() {
 	cli := cmdInterface.New()
 	conf := config.New()
 
-	db, err := sql.Open("sqlite3", "./sqlite-database.db")
+	db, err := sql.Open("sqlite", "./sqlite-database.db")
 	if err != nil {
 		logrus.Panic(err)
 	}
