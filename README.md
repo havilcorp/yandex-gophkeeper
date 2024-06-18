@@ -60,8 +60,6 @@ go tool cover -html=cover.out
 
 ## Build
 
-#### Client
-
 ```shell
 GOOS=darwin GOARCH=amd64 go build -o build/macos cmd/main.go
 GOOS=windows GOARCH=amd64 go build -o build/win.exe cmd/main.go
