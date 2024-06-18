@@ -1,3 +1,4 @@
+// Package конфинурация проекта
 package config
 
 import (
@@ -28,6 +29,7 @@ func writeConfigByFile(file string, conf *Config) error {
 	return nil
 }
 
+// New получить экземпляр структуры конфигурации
 func New() *Config {
 	conf := Config{
 		AddressHttp: "localhost:8080",

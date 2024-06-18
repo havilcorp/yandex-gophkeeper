@@ -1,3 +1,4 @@
+// Package app пакет для запуск клиента
 package app
 
 import (
@@ -24,6 +25,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// Start запускает клиент и ждет ввода команд
 func Start() {
 	cli := cmdInterface.New()
 	conf := config.New()

@@ -1,3 +1,4 @@
+// Package http транспортный уровень хранилища
 package http
 
 import (
@@ -17,6 +18,7 @@ type handler struct {
 	uc   storage.UseCase
 }
 
+// NewHandler получить экземпляр хендлера
 func NewHandler(conf *config.Config, uc storage.UseCase) *handler {
 	return &handler{
 		conf: conf,

@@ -1,3 +1,4 @@
+// Package http слой доставки
 package http
 
 import (
@@ -18,6 +19,7 @@ type handler struct {
 	client *http.Client
 }
 
+// New создает экземпляр хендлера
 func New(conf *config.Config, client *http.Client) *handler {
 	return &handler{
 		conf:   conf,
@@ -25,6 +27,7 @@ func New(conf *config.Config, client *http.Client) *handler {
 	}
 }
 
+// Login отправить запрос авторизации на сервер
 func (h *handler) Login(dto *entity.LoginDto) (string, error) {
 	data, err := json.Marshal(dto)
 	if err != nil {
@@ -50,6 +53,7 @@ func (h *handler) Login(dto *entity.LoginDto) (string, error) {
 	return jsonToken.Token, nil
 }
 
+// Registration отправить запрос регистрации на сервер
 func (h *handler) Registration(dto *entity.LoginDto) (string, error) {
 	data, err := json.Marshal(dto)
 	if err != nil {

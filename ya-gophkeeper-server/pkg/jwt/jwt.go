@@ -1,3 +1,4 @@
+// Package jwt пакут для работы с JWT стандартом
 package jwt
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// GenerateJWT получить jwt токен по ключу и записать внутрь айди пользователя
 func GenerateJWT(key []byte, user string) (string, error) {
 	payload := jwt.MapClaims{
 		"sub": user,
@@ -19,6 +21,7 @@ func GenerateJWT(key []byte, user string) (string, error) {
 	return t, nil
 }
 
+// VerifyJWT проверить валидность jwt токена
 func VerifyJWT(key []byte, token string) (string, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)

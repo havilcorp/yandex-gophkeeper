@@ -1,3 +1,4 @@
+// Package usecase пакет бизнес логики авторизации
 package usecase
 
 import (
@@ -12,12 +13,14 @@ type usecace struct {
 	repo auth.Repository
 }
 
+// New получить экземпляр структуры
 func New(repo auth.Repository) *usecace {
 	return &usecace{
 		repo: repo,
 	}
 }
 
+// Login авторизация пользователя
 func (uc *usecace) Login(email string, password string) (*entity.User, error) {
 	user, err := uc.repo.GetUser(email)
 	if err != nil {
@@ -31,7 +34,7 @@ func (uc *usecace) Login(email string, password string) (*entity.User, error) {
 	return user, nil
 }
 
-// TODO: check GetUser error
+// Registration регистрация пользователя
 func (uc *usecace) Registration(email string, password string) (*entity.User, error) {
 	if _, err := uc.repo.GetUser(email); err == nil {
 		return nil, entity.ErrUserExists

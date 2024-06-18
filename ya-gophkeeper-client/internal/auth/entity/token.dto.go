@@ -1,3 +1,4 @@
+// Package модель данных
 package entity
 
 type TokenDto struct {

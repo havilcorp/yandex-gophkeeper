@@ -20,6 +20,7 @@ type MainController struct {
 	cryptoKey []byte
 }
 
+// NewMainController контроллер для работы с командами
 func NewMainController(cli cli.CLIer, authUC auth.UseCase, storeUC storage.UseCase) *MainController {
 	return &MainController{
 		cli:     cli,
@@ -28,6 +29,7 @@ func NewMainController(cli cli.CLIer, authUC auth.UseCase, storeUC storage.UseCa
 	}
 }
 
+// Register регистрация комманд
 func (mc *MainController) Register() {
 	mc.cli.Register("login", mc.login)
 	mc.cli.Register("registration", mc.registration)

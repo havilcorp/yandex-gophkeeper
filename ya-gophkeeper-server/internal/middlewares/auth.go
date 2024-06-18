@@ -1,3 +1,4 @@
+// Package middleware мидлвар для аутентификации запросов
 package middleware
 
 import (
@@ -14,6 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// JWTAuthMiddleware мидлвар HTTP для проверки авторизации через JWT токен
 func JWTAuthMiddleware(jwtKey string) func(http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +41,7 @@ func JWTAuthMiddleware(jwtKey string) func(http.Handler) http.Handler {
 	}
 }
 
+// AuthGRPCMiddleware мидлвар GRPC для проверки авторизации через JWT токен по протоколу
 func AuthGRPCMiddleware(jwtKey string) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		logrus.Printf("[gRPC INFO] %s", info.FullMethod)

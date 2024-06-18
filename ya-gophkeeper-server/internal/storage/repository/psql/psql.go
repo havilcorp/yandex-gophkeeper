@@ -1,3 +1,4 @@
+// Package psql пакет для работы с базой данных
 package psql
 
 import (
@@ -10,18 +11,20 @@ type psqlstorage struct {
 	db *sql.DB
 }
 
+// NewPsqlStorage получить экземпляр структуры
 func NewPsqlStorage(db *sql.DB) *psqlstorage {
 	return &psqlstorage{
 		db: db,
 	}
 }
 
-// TODO: AddContext
+// Save сохранить данные в бд
 func (repo *psqlstorage) Save(userID int, dto *entity.CreateDto) error {
 	_, err := repo.db.Exec("INSERT INTO data (user_id, data, meta) VALUES ($1, $2, $3)", userID, dto.Data, dto.Meta)
 	return err
 }
 
+// GetAll получить все данные из бд
 func (repo *psqlstorage) GetAll(userID int) (*[]entity.Item, error) {
 	rows, err := repo.db.Query("SELECT id, user_id, data, meta FROM data WHERE user_id = $1", userID)
 	if err != nil {

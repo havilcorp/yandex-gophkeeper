@@ -1,3 +1,4 @@
+// Package конфинурация проекта
 package config
 
 import (
@@ -13,6 +14,7 @@ type Config struct {
 	AddressGRPC string `json:"address_grpc"`
 }
 
+// New получить экземпляр структуры конфигурации
 func New() *Config {
 	conf := Config{
 		AddressHttp: "localhost:8080",

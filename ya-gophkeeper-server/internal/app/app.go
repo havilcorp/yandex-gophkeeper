@@ -1,3 +1,4 @@
+// Package app пакет для запуск сервера
 package app
 
 import (
@@ -95,6 +96,7 @@ func startServer(conf *config.Config, database *sql.DB) (*http.Server, net.Liste
 	return &serverHttp, grpcListener, nil
 }
 
+// Start запуск сервера
 func Start() error {
 	conf := config.New()
 	database, err := sql.Open("pgx", conf.DBConnect)
@@ -103,6 +105,11 @@ func Start() error {
 		return err
 	}
 	defer database.Close()
+
+	if err := database.Ping(); err != nil {
+		logrus.Errorf("pgx Ping => %v", err)
+		return err
+	}
 
 	serverHttp, grpcListener, err := startServer(conf, database)
 	if err != nil {

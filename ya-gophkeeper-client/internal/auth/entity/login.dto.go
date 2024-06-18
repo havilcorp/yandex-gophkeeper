@@ -1,3 +1,4 @@
+// Package модель данных
 package entity
 
 type LoginDto struct {

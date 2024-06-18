@@ -1,3 +1,4 @@
+// Package crypto пакет для шифрования и засшифрования данных
 package crypto
 
 import (
@@ -10,6 +11,7 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
+// EncryptOAEP получить зашифрованные данные по ключу
 func EncryptOAEP(public *rsa.PublicKey, msg []byte) ([]byte, error) {
 	msgLen := len(msg)
 	hash := sha512.New()
@@ -29,6 +31,7 @@ func EncryptOAEP(public *rsa.PublicKey, msg []byte) ([]byte, error) {
 	return encryptedBytes, nil
 }
 
+// DecryptOAEP получить расшифрованные данные по ключу
 func DecryptOAEP(private *rsa.PrivateKey, msg []byte) ([]byte, error) {
 	msgLen := len(msg)
 	hash := sha512.New()
@@ -48,6 +51,7 @@ func DecryptOAEP(private *rsa.PrivateKey, msg []byte) ([]byte, error) {
 	return decryptedBytes, nil
 }
 
+// GetKey сгенерировать новый ключ используя пароль и соль
 func GetKey(password, salt []byte) ([]byte, error) {
 	if salt == nil {
 		salt = make([]byte, 32)
@@ -64,6 +68,7 @@ func GetKey(password, salt []byte) ([]byte, error) {
 	return key, nil
 }
 
+// Encrypt получить зашифрованные данные по ключу
 func Encrypt(key, data []byte) ([]byte, error) {
 	blockCipher, err := aes.NewCipher(key)
 	if err != nil {
@@ -85,6 +90,7 @@ func Encrypt(key, data []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
+// Decrypt получить расшифрованные данные по ключу
 func Decrypt(key, data []byte) ([]byte, error) {
 	blockCipher, err := aes.NewCipher(key)
 	if err != nil {

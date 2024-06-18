@@ -1,3 +1,4 @@
+// Package psql пакет для работы с базой данных
 package psql
 
 import (
@@ -12,13 +13,14 @@ type psqlstorage struct {
 	db *sql.DB
 }
 
+// NewPsqlStorage получить экземпляр структуры
 func NewPsqlStorage(db *sql.DB) *psqlstorage {
 	return &psqlstorage{
 		db: db,
 	}
 }
 
-// TODO: AddContext
+// GetUser получить пользователя
 func (repo *psqlstorage) GetUser(email string) (*entity.User, error) {
 	user := entity.User{}
 	row := repo.db.QueryRow("SELECT id, email, password FROM users WHERE email = $1", email)
@@ -34,8 +36,7 @@ func (repo *psqlstorage) GetUser(email string) (*entity.User, error) {
 	return &user, nil
 }
 
-// TODO: AddContext
-// TODO: Edit function create user RETURNING ...
+// CreateUser создать пользователя
 func (repo *psqlstorage) CreateUser(email string, hashPassword string) (*entity.User, error) {
 	row := repo.db.QueryRow("INSERT INTO users(email, password) VALUES ($1, $2) RETURNING id", email, hashPassword)
 	if err := row.Err(); err != nil {

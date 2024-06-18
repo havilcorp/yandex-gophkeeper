@@ -1,3 +1,4 @@
+// Package пакет авторизации
 package auth
 
 import "yandex-gophkeeper-client/internal/auth/entity"

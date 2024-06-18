@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// Register решистрация роутов хранилища
 func (h *handler) Register(mux *chi.Mux) {
 	mux.Route("/storage", func(r chi.Router) {
 		r.Use(middleware.JWTAuthMiddleware(h.conf.JWTKey))

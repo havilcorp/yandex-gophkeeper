@@ -1,3 +1,4 @@
+// Package main точка запуска клиента
 package main
 
 import (

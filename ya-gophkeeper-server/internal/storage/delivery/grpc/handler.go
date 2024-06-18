@@ -1,3 +1,4 @@
+// Package grpc транспортный уровень хранилища
 package grpc
 
 import (
@@ -17,6 +18,7 @@ type handler struct {
 	uc   storage.UseCase
 }
 
+// NewHandler получить экземпляр хендлера
 func NewHandler(conf *config.Config, uc storage.UseCase) *handler {
 	return &handler{
 		conf: conf,
@@ -24,6 +26,7 @@ func NewHandler(conf *config.Config, uc storage.UseCase) *handler {
 	}
 }
 
+// Save сохранить данные
 func (h *handler) Save(ctx context.Context, in *pb.SaveRequest) (*pb.SaveResponse, error) {
 	var response pb.SaveResponse
 	userStr := ctx.Value("X-User-ID").(string)
@@ -41,6 +44,7 @@ func (h *handler) Save(ctx context.Context, in *pb.SaveRequest) (*pb.SaveRespons
 	return &response, nil
 }
 
+// GetAll получить данные
 func (h *handler) GetAll(ctx context.Context, in *pb.GetAllRequest) (*pb.GetAllResponse, error) {
 	var response pb.GetAllResponse
 	userStr := ctx.Value("X-User-ID").(string)

@@ -1,3 +1,4 @@
+// Package usecase бизнес логика стореджа
 package usecase
 
 import (
@@ -14,6 +15,7 @@ type UserCase struct {
 	local storage.LocalStorager
 }
 
+// New получить экземпляр структуры
 func New(del storage.Delivery, local storage.LocalStorager) *UserCase {
 	return &UserCase{
 		del:   del,
@@ -21,6 +23,7 @@ func New(del storage.Delivery, local storage.LocalStorager) *UserCase {
 	}
 }
 
+// SetToken задать новый токен
 func (uc *UserCase) SetToken(token string) {
 	uc.del.SetToken(token)
 }
@@ -38,6 +41,7 @@ func (uc *UserCase) Save(data []byte, meta string) error {
 	return err
 }
 
+// Sync синхронизация клиента и сервера
 func (uc *UserCase) Sync() error {
 	listStore, err := uc.del.GetAll()
 	if err != nil {
@@ -86,10 +90,12 @@ func (uc *UserCase) Sync() error {
 	return nil
 }
 
+// GetByServerAll получить данные из сервера
 func (uc *UserCase) GetByServerAll() (*[]entity.ItemDto, error) {
 	return uc.del.GetAll()
 }
 
+// GetByLocalAll получить данные из локального хранилища
 func (uc *UserCase) GetByLocalAll() (*[]entity.ItemDto, error) {
 	return uc.local.GetAll()
 }

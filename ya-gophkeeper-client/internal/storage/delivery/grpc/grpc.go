@@ -1,3 +1,4 @@
+// Package grpc пакет для отправки и получения данных по протоколу GRPC
 package grpc
 
 import (
@@ -19,6 +20,7 @@ type handler struct {
 	token  string
 }
 
+// New получить экземпляр структуры
 func New(conf *config.Config, client pb.SaveClient) *handler {
 	return &handler{
 		conf:   conf,
@@ -26,10 +28,12 @@ func New(conf *config.Config, client pb.SaveClient) *handler {
 	}
 }
 
+// SetToken задать новый токен
 func (h *handler) SetToken(token string) {
 	h.token = token
 }
 
+// Save сохранить данные
 func (h *handler) Save(dto *entity.ItemDto) error {
 	header := metadata.New(map[string]string{
 		"Authorization": fmt.Sprintf("Bearer %s", h.token),
@@ -42,6 +46,7 @@ func (h *handler) Save(dto *entity.ItemDto) error {
 	return err
 }
 
+// GetAll получить данные
 func (h *handler) GetAll() (*[]entity.ItemDto, error) {
 	header := metadata.New(map[string]string{
 		"Authorization": fmt.Sprintf("Bearer %s", h.token),

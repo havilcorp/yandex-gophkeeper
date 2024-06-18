@@ -1,3 +1,4 @@
+// Package http транспортный уровень авторизации
 package http
 
 import (
@@ -19,6 +20,7 @@ type handler struct {
 	uc   auth.UseCase
 }
 
+// NewHandler получить экземпляр хендлера
 func NewHandler(conf *config.Config, uc auth.UseCase) *handler {
 	return &handler{
 		conf: conf,
@@ -34,6 +36,7 @@ func (h *handler) login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	logrus.Println(dto)
 	// uc
 	user, err := h.uc.Login(dto.Email, dto.Password)
 	if err != nil {

@@ -1,3 +1,4 @@
+// Package http пакет для отправки и получения данных по протоколу HTTP
 package http
 
 import (
@@ -19,6 +20,7 @@ type handler struct {
 	token  string
 }
 
+// New получить экземпляр структуры
 func New(conf *config.Config, client *http.Client) *handler {
 	return &handler{
 		conf:   conf,
@@ -26,10 +28,12 @@ func New(conf *config.Config, client *http.Client) *handler {
 	}
 }
 
+// SetToken задать новый токен
 func (h *handler) SetToken(token string) {
 	h.token = token
 }
 
+// Save сохранить данные
 func (h *handler) Save(dto *entity.ItemDto) error {
 	data, err := json.Marshal(dto)
 	if err != nil {
@@ -55,6 +59,7 @@ func (h *handler) Save(dto *entity.ItemDto) error {
 	return nil
 }
 
+// GetAll получить данные
 func (h *handler) GetAll() (*[]entity.ItemDto, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/storage", h.conf.AddressHttp), nil)
 	if err != nil {
