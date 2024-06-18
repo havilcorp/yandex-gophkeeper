@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -25,8 +26,16 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+var (
+	buildVersion string = "1.0.0"
+	buildDate    string = "18.06.2024"
+)
+
 // Start запускает клиент и ждет ввода команд
 func Start() {
+	fmt.Printf("Build version: %s\n", buildVersion)
+	fmt.Printf("Build date: %s\n", buildDate)
+
 	cli := cmdInterface.New()
 	conf := config.New()
 
