@@ -1,0 +1,9 @@
+{
+	"address_http": ":8080",
+	"address_grpc": ":8081",
+	"db_connect": "postgres://postgres:password@localhost:5433/postgres?sslmode=disable",
+	"jwt_key": "Az332d(223",
+	"ca_crt": "./tls/ca.crt",
+	"server_crt": "./tls/server.crt",
+	"server_key": "./tls/server.key"
+}
