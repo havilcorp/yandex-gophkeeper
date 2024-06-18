@@ -4,21 +4,25 @@ import (
 	"bytes"
 
 	"yandex-gophkeeper-client/internal/entity"
-	"yandex-gophkeeper-client/internal/store"
+	"yandex-gophkeeper-client/internal/storage"
 
 	"github.com/sirupsen/logrus"
 )
 
 type UserCase struct {
-	del   store.Delivery
-	local store.LocalStorager
+	del   storage.Delivery
+	local storage.LocalStorager
 }
 
-func New(del store.Delivery, local store.LocalStorager) *UserCase {
+func New(del storage.Delivery, local storage.LocalStorager) *UserCase {
 	return &UserCase{
 		del:   del,
 		local: local,
 	}
+}
+
+func (uc *UserCase) SetToken(token string) {
+	uc.del.SetToken(token)
 }
 
 func (uc *UserCase) Save(data []byte, meta string) error {

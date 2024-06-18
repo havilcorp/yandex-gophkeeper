@@ -11,6 +11,15 @@ import (
 	"golang.org/x/term"
 )
 
+type CLIer interface {
+	Register(string, func())
+	GetUserPrint(string) (string, error)
+	GetHideUserPrint(string) (string, error)
+	Println(string)
+	CallFn(string)
+	Run()
+}
+
 type CLI struct {
 	reader *bufio.Reader
 	list   map[string]func()
@@ -27,7 +36,7 @@ func (cli *CLI) Register(name string, fn func()) {
 	cli.list[name] = fn
 }
 
-func (cli *CLI) Call(command string) {
+func (cli *CLI) CallFn(command string) {
 	if _, ok := cli.list[command]; ok {
 		cli.list[command]()
 	}

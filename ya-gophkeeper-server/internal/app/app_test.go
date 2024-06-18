@@ -14,6 +14,8 @@ import (
 func Test_startServer(t *testing.T) {
 	conf := config.New()
 	conf.CACrt = "../../tls/ca.crt"
+	conf.ServerCrt = "../../tls/server.crt"
+	conf.ServerKey = "../../tls/server.key"
 	db, _, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)

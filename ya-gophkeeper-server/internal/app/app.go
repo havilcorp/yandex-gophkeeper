@@ -69,6 +69,9 @@ func startServer(conf *config.Config, database *sql.DB) (*http.Server, net.Liste
 		return nil, nil, fmt.Errorf("net.Listen: %w", err)
 	}
 	cred, err := credentials.NewServerTLSFromFile(conf.ServerCrt, conf.ServerKey)
+	if err != nil {
+		return nil, nil, fmt.Errorf("credentials.NewServerTLSFromFile: %w", err)
+	}
 	serverGRPC := grpc.NewServer(grpc.Creds(cred), grpc.ChainUnaryInterceptor(middleware.AuthGRPCMiddleware(conf.JWTKey)))
 	pb.RegisterSaveServer(serverGRPC, storageGRPCController.NewHandler(conf, storageUC))
 

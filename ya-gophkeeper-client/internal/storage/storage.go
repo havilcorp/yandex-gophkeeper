@@ -1,4 +1,4 @@
-package store
+package storage
 
 import "yandex-gophkeeper-client/internal/entity"
 
